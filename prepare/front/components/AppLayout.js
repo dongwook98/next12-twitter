@@ -1,9 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
-import { Menu } from 'antd';
+import { Input, Menu, Row, Col } from 'antd';
+import styled from 'styled-components';
+import UserProfile from '../components/UserProfile';
+import LoginForm from '../components/LoginForm';
+
+const InputSearch = styled(Input.Search)`
+  vertical-align: 'middle';
+`;
 
 const AppLayout = ({ children }) => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // 더미 데이터
   return (
     <div>
       <Menu mode='horizontal'>
@@ -18,12 +26,27 @@ const AppLayout = ({ children }) => {
           </Link>
         </Menu.Item>
         <Menu.Item>
+          <InputSearch enterButton />
+        </Menu.Item>
+        <Menu.Item>
           <Link href='/signup'>
             <a>회원가입</a>
           </Link>
         </Menu.Item>
       </Menu>
-      {children}
+      <Row gutter={8}>
+        <Col xs={24} md={6}>
+          {isLoggedIn ? <UserProfile /> : <LoginForm />}
+        </Col>
+        <Col xs={24} md={12}>
+          {children}
+        </Col>
+        <Col xs={24} md={6}>
+          <a href='https://github.com/dongwook98/next12-twitter' target='_blank' rel='noreferrer noopener'>
+            Made by dongwook
+          </a>
+        </Col>
+      </Row>
     </div>
   );
 };

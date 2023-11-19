@@ -9,13 +9,13 @@ export const initailState = {
       content: '첫 번째 게시글 #해시태그 #익스프레스',
       Images: [
         {
-          src: 'https://unsplash.com/ko/%EC%82%AC%EC%A7%84/%ED%96%87%EC%82%B4%EC%9D%80-%EA%B8%B8%EC%9D%98-%EB%82%98%EB%AC%B4-%EC%82%AC%EC%9D%B4%EB%A1%9C-%EB%B9%84%EC%B9%9C%EB%8B%A4-8OEzkXufphQ',
+          src: 'https://cdn.pixabay.com/photo/2023/10/20/13/49/beach-8329531_1280.jpg',
         },
         {
-          src: 'https://unsplash.com/ko/%EC%82%AC%EC%A7%84/%EB%AA%A8%EB%9E%98-%EC%82%AC%EC%9E%A5-%EC%9C%84%EC%97%90-%EC%84%9C-%EC%9E%88%EB%8A%94-%ED%95%9C-%EB%AC%B4%EB%A6%AC%EC%9D%98-%EC%82%AC%EB%9E%8C%EB%93%A4-qf43ynTzuUk',
+          src: 'https://cdn.pixabay.com/photo/2023/08/06/16/17/snow-8173264_1280.jpg',
         },
         {
-          src: 'https://unsplash.com/ko/%EC%82%AC%EC%A7%84/fZ2frS7Vxkc',
+          src: 'https://cdn.pixabay.com/photo/2023/11/04/10/03/bear-8364583_1280.png',
         },
       ],
       Comments: [

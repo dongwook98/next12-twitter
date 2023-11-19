@@ -1,15 +1,18 @@
 import React, { useCallback } from 'react';
 import { Card, Avatar, Button } from 'antd';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
+import { logoutAction } from '../reducers';
 
 const ButtonWrapper = styled(Button)`
   margin-left: 47px;
 `;
 
-const UserProfile = ({ setIsLoggedIn }) => {
+const UserProfile = () => {
+  const dispatch = useDispatch();
   const onLogout = useCallback(() => {
-    setIsLoggedIn(false);
+    // setIsLoggedIn(false);
+    dispatch(logoutAction());
   }, []);
   return (
     <Card
@@ -30,10 +33,6 @@ const UserProfile = ({ setIsLoggedIn }) => {
       <ButtonWrapper onClick={onLogout}>로그아웃</ButtonWrapper>
     </Card>
   );
-};
-
-UserProfile.propTypes = {
-  setIsLoggedIn: PropTypes.func.isRequired,
 };
 
 export default UserProfile;

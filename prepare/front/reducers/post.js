@@ -21,15 +21,15 @@ export const initailState = {
       Comments: [
         {
           User: {
-            nickname: 'nero',
+            nickname: '김예리97',
           },
-          content: '우와 개정판이 나왔군요~',
+          content: '멋진 풍경이에요!',
         },
         {
           User: {
             nickname: '동욱98',
           },
-          content: '얼른 사고싶어요~',
+          content: '정말 멋진 사진이네요!',
         },
       ],
     },

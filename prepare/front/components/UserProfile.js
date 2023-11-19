@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import { Card, Avatar, Button } from 'antd';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 const ButtonWrapper = styled(Button)`
   margin-left: 47px;
@@ -29,6 +30,10 @@ const UserProfile = ({ setIsLoggedIn }) => {
       <ButtonWrapper onClick={onLogout}>로그아웃</ButtonWrapper>
     </Card>
   );
+};
+
+UserProfile.propTypes = {
+  setIsLoggedIn: PropTypes.func.isRequired,
 };
 
 export default UserProfile;

@@ -27,4 +27,9 @@ const FollowList = ({ header, data }) => {
   );
 };
 
+FollowList.propTypes = {
+  header: PropTypes.node.isRequired,
+  data: PropTypes.data,
+};
+
 export default FollowList;

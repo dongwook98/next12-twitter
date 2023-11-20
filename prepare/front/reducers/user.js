@@ -82,6 +82,7 @@ const reducer = (state = initailState, action) => {
       return {
         ...state,
         logOutLoading: true,
+        logInDone: false,
         logOutDone: false,
         logOutError: null,
       };

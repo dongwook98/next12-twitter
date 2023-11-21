@@ -8,27 +8,34 @@ export const initailState = {
         id: 1,
         nickname: '강동욱',
       },
-      content: '첫 번째 게시글 #해시태그 #익스프레스',
+      content: '첫 번째 게시글 #해시태그 #풍경',
       Images: [
         {
+          id: shortId.generate(),
           src: 'https://cdn.pixabay.com/photo/2023/10/20/13/49/beach-8329531_1280.jpg',
         },
         {
+          id: shortId.generate(),
           src: 'https://cdn.pixabay.com/photo/2023/08/06/16/17/snow-8173264_1280.jpg',
         },
         {
+          id: shortId.generate(),
           src: 'https://cdn.pixabay.com/photo/2023/11/04/10/03/bear-8364583_1280.png',
         },
       ],
       Comments: [
         {
+          id: shortId.generate(),
           User: {
+            id: shortId.generate(),
             nickname: '김예리97',
           },
           content: '멋진 풍경이에요!',
         },
         {
+          id: shortId.generate(),
           User: {
+            id: shortId.generate(),
             nickname: '동욱98',
           },
           content: '정말 멋진 사진이네요!',
@@ -40,6 +47,9 @@ export const initailState = {
   addPostLoading: false,
   addPostDone: false,
   addPostError: null,
+  removePostLoading: false,
+  removePostDone: false,
+  removePostError: null,
   addCommentLoading: false,
   addCommentDone: false,
   addCommentError: null,
@@ -48,6 +58,10 @@ export const initailState = {
 export const ADD_POST_REQUEST = 'ADD_POST_REQUEST';
 export const ADD_POST_SUCCESS = 'ADD_POST_SUCCESS';
 export const ADD_POST_FAILURE = 'ADD_POST_FAILURE';
+
+export const REMOVE_POST_REQUEST = 'REMOVE_POST_REQUEST';
+export const REMOVE_POST_SUCCESS = 'REMOVE_POST_SUCCESS';
+export const REMOVE_POST_FAILURE = 'REMOVE_POST_FAILURE';
 
 export const ADD_COMMENT_REQUEST = 'ADD_COMMENT_REQUEST';
 export const ADD_COMMENT_SUCCESS = 'ADD_COMMENT_SUCCESS';
@@ -64,11 +78,11 @@ export const addComment = (data) => ({
 });
 
 const dummyPost = (data) => ({
-  id: shortId.generate(),
-  content: data,
+  id: data.id,
+  content: data.content,
   User: {
     id: 1,
-    nickname: '제로초',
+    nickname: '강동욱',
   },
   Images: [],
   Comments: [],
@@ -79,7 +93,7 @@ const dummyComment = (data) => ({
   content: data,
   User: {
     id: 1,
-    nickname: '제로초',
+    nickname: '강동욱',
   },
 });
 
@@ -104,6 +118,26 @@ const reducer = (state = initailState, action) => {
         ...state,
         addPostLoading: false,
         addPostError: action.error,
+      };
+    case REMOVE_POST_REQUEST:
+      return {
+        ...state,
+        removePostLoading: true,
+        removePostDone: false,
+        removePostError: null,
+      };
+    case REMOVE_POST_SUCCESS:
+      return {
+        ...state,
+        mainPosts: state.mainPosts.filter((v) => v.id !== action.data),
+        removePostLoading: false,
+        removePostDone: true,
+      };
+    case REMOVE_POST_FAILURE:
+      return {
+        ...state,
+        removePostLoading: false,
+        removePostError: action.error,
       };
     case ADD_COMMENT_REQUEST:
       return {

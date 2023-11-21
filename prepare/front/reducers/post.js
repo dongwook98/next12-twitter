@@ -1,7 +1,9 @@
 import shortId from 'shortid';
 import { produce } from 'immer';
+import { faker } from '@faker-js/faker/locale/ko';
+faker.seed(123);
 
-export const initailState = {
+export const initialState = {
   mainPosts: [
     {
       id: 1,
@@ -56,6 +58,33 @@ export const initailState = {
   addCommentError: null,
 };
 
+initialState.mainPosts = initialState.mainPosts.concat(
+  Array(20)
+    .fill()
+    .map(() => ({
+      id: shortId.generate(),
+      User: {
+        id: shortId.generate(),
+        nickname: faker.person.fullName(),
+      },
+      content: faker.lorem.paragraph(),
+      Images: [
+        {
+          src: faker.image.url(),
+        },
+      ],
+      Comments: [
+        {
+          User: {
+            id: shortId.generate(),
+            nickname: faker.person.fullName(),
+          },
+          content: faker.lorem.sentence(),
+        },
+      ],
+    }))
+);
+
 export const ADD_POST_REQUEST = 'ADD_POST_REQUEST';
 export const ADD_POST_SUCCESS = 'ADD_POST_SUCCESS';
 export const ADD_POST_FAILURE = 'ADD_POST_FAILURE';
@@ -99,7 +128,7 @@ const dummyComment = (data) => ({
 });
 
 // 이전 상태를 액션을 통해 다음 상태로 만들어내는 함수(불변성은 지키면서)
-const reducer = (state = initailState, action) => {
+const reducer = (state = initialState, action) => {
   return produce(state, (draft) => {
     switch (action.type) {
       case ADD_POST_REQUEST:

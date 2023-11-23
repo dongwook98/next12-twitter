@@ -1,8 +1,7 @@
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define(
-    'User',
+    'User', // MY SQL에는 Users 테이블 생성
     {
-      // MYSQL에는 users 테이블 생성
       // id가 기본적으로 들어있다.
       email: {
         type: DataTypes.STRING(30), // STRING, TEXT, BOOLEAN, INTEGER, FLOAT, DATETIME
@@ -14,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false, // 필수
       },
       passwrod: {
-        type: DataTypes.STRING(100),
+        type: DataTypes.STRING(100), // 암호화 해야되서 넉넉하게 둠
         allowNull: false, // 필수
       },
     },
@@ -23,12 +22,12 @@ module.exports = (sequelize, DataTypes) => {
       collate: 'utf8_general_ci', //한글 저장
     }
   );
-  User.associtate = (db) => {
+  User.associate = (db) => {
     db.User.hasMany(db.Post);
     db.User.hasMany(db.Comment);
     db.User.belongsToMany(db.Post, { through: 'Like', as: 'Liked' });
-    db.User.belongsToManY(db.User, { through: 'Follow', as: 'Followers', foreignKey: 'FollowingId' });
-    db.User.belongsToManY(db.User, { through: 'Follow', as: 'Followings', foreignKey: 'FollowerId' });
+    db.User.belongsToMany(db.User, { through: 'Follow', as: 'Followers', foreignKey: 'FollowingId' });
+    db.User.belongsToMany(db.User, { through: 'Follow', as: 'Followings', foreignKey: 'FollowerId' });
   };
   return User;
 };

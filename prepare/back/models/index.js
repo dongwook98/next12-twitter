@@ -1,5 +1,5 @@
-const Sequelize = require('sequelize');
-const env = process.env.NODE_ENV || 'development'; // 기본으로 development
+const Sequelize = require('sequelize'); // 시퀄라이즈 불러오기
+const env = process.env.NODE_ENV || 'development'; // 기본값으로 development
 const config = require('../config/config')[env];
 const db = {};
 
@@ -12,15 +12,16 @@ db.Image = require('./image')(sequelize, Sequelize);
 db.Post = require('./post')(sequelize, Sequelize);
 db.User = require('./user')(sequelize, Sequelize);
 
+// [Comment, Hashtag, Image, Post, User] 반복문으로 돌면서 associate
 Object.keys(db).forEach((modelName) => {
   if (db[modelName].associate) {
     db[modelName].associate(db);
   }
 });
 
+// db 변수에 시퀄라이즈 넣어두기
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
+// db 변수 내보내기
 module.exports = db;
-
-// 시퀄라이즈가 노드랑 mysql을 연결해주는걸 도와줌 // 시퀄라이즈는 내부적으로 mysql2를 사용해서 mysql2 드라이버에 설정 정보들을 보내줌

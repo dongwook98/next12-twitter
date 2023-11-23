@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(30),
         allowNull: false, // 필수
       },
-      passwrod: {
+      password: {
         type: DataTypes.STRING(100), // 암호화 해야되서 넉넉하게 둠
         allowNull: false, // 필수
       },

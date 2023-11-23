@@ -1,4 +1,4 @@
-import { all, fork, takeLatest, delay, put } from 'redux-saga/effects';
+import { all, fork, takeLatest, delay, put, call } from 'redux-saga/effects';
 import axios from 'axios';
 import {
   LOG_IN_REQUEST,
@@ -58,14 +58,16 @@ function* logOut() {
   }
 }
 
-function signUpAPI() {
-  return axios.post('/api/signup');
+function signUpAPI(data) {
+  return axios.post('http://localhost:3065/user', data); // data = {email, nickname, password}
+  // GET과 DELETE는 2번째 인수로 데이터를 못넘기는데, POST,PUT,PATCH는 데이터를 넘겨줄 수 있음
 }
 
-function* signUp() {
+function* signUp(action) {
   try {
-    // const result = yield call(signUpAPI); // folk는 비동기 함수 호출 non-blocking
-    yield delay(1000);
+    const result = yield call(signUpAPI, action.data); // folk는 비동기 함수 호출 non-blocking, call은 동기 함수 호출
+    console.log(result);
+    // yield delay(1000);
     yield put({
       type: SIGN_UP_SUCCESS,
     });

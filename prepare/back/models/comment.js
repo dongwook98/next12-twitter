@@ -12,8 +12,10 @@ module.exports = (sequelize, DataTypes) => {
       charset: 'utf8mb4',
       collate: 'utf8mb4_general_ci', // 이모티콘 저장
     }
+    // UserId:
+    // PostId:
   );
-  Comment.associtate = (db) => {
+  Comment.associate = (db) => {
     db.Comment.belongsTo(db.User);
     db.Comment.belongsTo(db.Post);
   };

@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       collate: 'utf8_general_ci',
     }
   );
-  Image.associtate = (db) => {
+  Image.associate = (db) => {
     db.Image.belongsTo(db.Post);
   };
   return Image;

@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 
 // 분리한 라우터들 불러오기
 const postRouter = require('./routes/post');
@@ -18,6 +19,11 @@ db.sequelize
   .catch(console.error);
 
 // use안에들어간애들을 미들웨어라고 부름 express의 기능을 추가
+app.use(
+  cors({
+    origin: true,
+  })
+);
 // 프론트에서 보낸 데이터를 req.body 안에다가 넣어주는 역할
 // 라우터들의 위에 위치해야한다. 순서 중요
 app.use(express.json()); // 프론트에서 json형식으로 데이터를 보냈을때 json형식의 데이터를 req.body안에 넣을 수 있게 처리

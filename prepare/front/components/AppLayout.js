@@ -56,4 +56,5 @@ const AppLayout = ({ children }) => {
 AppLayout.propTypes = {
   children: PropTypes.node.isRequired, // node: 리액트의 노드 리턴안에 들어갈수있는것들이 모두 노드!
 };
+
 export default AppLayout;

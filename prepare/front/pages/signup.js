@@ -68,7 +68,6 @@ const Signup = () => {
     <>
       <AppLayout>
         <Head>
-          <meta charSet='utf-8' />
           <title>회원가입 | 트위터</title>
         </Head>
         <Form onFinish={onSubmit}>

@@ -1,6 +1,6 @@
 import { produce } from 'immer';
 
-export const initailState = {
+export const initialState = {
   followLoading: false, // 팔로우 시도중
   followDone: false,
   followError: null,
@@ -64,7 +64,7 @@ const dummyUser = (data) => ({
 export const loginRequestAction = (data) => {
   return {
     type: LOG_IN_REQUEST,
-    data,
+    data, // data = {email ,password}
   };
 };
 
@@ -74,7 +74,7 @@ export const logoutRequestAction = () => {
   };
 };
 
-const reducer = (state = initailState, action) => {
+const reducer = (state = initialState, action) => {
   return produce(state, (draft) => {
     switch (action.type) {
       case FOLLOW_REQUEST:
@@ -113,7 +113,7 @@ const reducer = (state = initailState, action) => {
       case LOG_IN_SUCCESS:
         draft.logInLoading = false;
         draft.logInDone = true;
-        draft.me = dummyUser(action.data);
+        draft.me = action.data;
         break;
       case LOG_IN_FAILURE:
         draft.logInLoading = false;

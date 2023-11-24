@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcrypt'); // 비밀번호 해쉬해주는 bcrypt 불러오기
 const passport = require('passport');
-const { User } = require('../models'); // db 불러와서 구조분해할당
+const { User, Post } = require('../models'); // db 불러와서 구조분해할당
 const router = express.Router();
 
 // POST /user/login
@@ -24,8 +24,27 @@ router.post('/login', (req, res, next) => {
         console.error(loginErr);
         return next(loginErr);
       }
+      const fullUserWithoutPassword = await User.findOne({
+        where: { id: user.id },
+        attributes: {
+          exclude: ['password'],
+        },
+        include: [
+          {
+            model: Post,
+          },
+          {
+            model: User,
+            as: 'Followings',
+          },
+          {
+            model: User,
+            as: 'Followers',
+          },
+        ],
+      });
       // req.login을 하면 res.setHeader('Cookie', '랜덤한 문자열') 이런걸 내부적으로 처리 , 알아서 세션이랑도 연결
-      return res.status(200).json(user); // 패스포트 로그인까지 성공하면 프론트로 응답
+      return res.status(200).json(fullUserWithoutPassword); // 패스포트 로그인까지 성공하면 프론트로 응답
     });
   })(req, res, next);
 });
@@ -35,7 +54,7 @@ router.post('/', async (req, res, next) => {
   try {
     // 혹시나 기존에 있던 사용자중에 프론트에서 보낸 이메일이랑 같은 걸 쓰고 있는 사용자가 있는지 있다면 그거를 exUser에다가 저장하기
     const exUser = await User.findOne({
-      // fincOnd도 비동기 함수
+      // findOne도 비동기 함수
       where: {
         email: req.body.email,
       },
@@ -61,6 +80,12 @@ router.post('/', async (req, res, next) => {
     console.error(error);
     next(error); // status 500 // next를 통해서 에러를 보내면 익스프레스가 알아서 브라우저로 어떤 에러가 났는지 알려줌
   }
+});
+
+router.post('/logout', (req, res) => {
+  req.logout(() => {
+    res.redirect('/');
+  });
 });
 
 module.exports = router;

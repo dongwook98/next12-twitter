@@ -1,10 +1,36 @@
 const express = require('express');
 const bcrypt = require('bcrypt'); // 비밀번호 해쉬해주는 bcrypt 불러오기
+const passport = require('passport');
 const { User } = require('../models'); // db 불러와서 구조분해할당
 const router = express.Router();
 
+// POST /user/login
+router.post('/login', (req, res, next) => {
+  // 미들웨어 확장하는 방법
+  // 패스포트 로그인 전략 실행
+  passport.authenticate('local', (err, user, clientErr) => {
+    // done에서 넣은값들이 순서대로 전달되는곳
+    if (err) {
+      console.error(err);
+      return next(err);
+    }
+    if (clientErr) {
+      return res.status(401).send(clientErr.reason); // 401: 허가되지않은
+    }
+    return req.login(user, async (loginErr) => {
+      // 패스포트 로그인
+      if (loginErr) {
+        console.error(loginErr);
+        return next(loginErr);
+      }
+      // 찐 로그인
+      return res.json(user);
+    });
+  })(req, res, next);
+});
+
+// POST /user/
 router.post('/', async (req, res, next) => {
-  // POST /user/
   try {
     // 혹시나 기존에 있던 사용자중에 프론트에서 보낸 이메일이랑 같은 걸 쓰고 있는 사용자가 있는지 있다면 그거를 exUser에다가 저장하기
     const exUser = await User.findOne({

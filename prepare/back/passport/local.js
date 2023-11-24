@@ -8,7 +8,7 @@ module.exports = () => {
     // 로컬 로그인 전략
     new LocalStrategy(
       {
-        usernameFiled: 'email', // req.body.email 이라고 적어준 것
+        usernameField: 'email', // req.body.email 이라고 적어준 것
         passwordField: 'password',
       },
       async (email, password, done) => {

@@ -1,12 +1,12 @@
 const express = require('express');
 const cors = require('cors');
-
 // 분리한 라우터들 불러오기
 const postRouter = require('./routes/post');
 const userRouter = require('./routes/user');
-
 // models/index.js에 있는 db 불러오기
 const db = require('./models');
+// 패스포트 설정 불러오기
+const passportConfig = require('./passport');
 
 const app = express();
 
@@ -17,6 +17,8 @@ db.sequelize
     console.log('db 연결 성공');
   })
   .catch(console.error);
+
+passportConfig();
 
 // use안에들어간애들을 미들웨어라고 부름 express의 기능을 추가
 app.use(

@@ -33,7 +33,8 @@ const CommentForm = ({ post }) => {
           style={{ position: 'absolute', right: 0, bottom: -40, zIndex: 1 }}
           type='primary'
           htmlType='submit'
-          loading={addCommentLoading}>
+          loading={addCommentLoading}
+        >
           댓글 작성
         </Button>
       </Form.Item>

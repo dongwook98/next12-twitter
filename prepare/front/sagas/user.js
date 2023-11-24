@@ -19,17 +19,16 @@ import {
 } from '../reducers/user';
 
 function logInAPI(data) {
-  return axios.post('/api/login', data);
+  return axios.post('/user/login', data);
 }
 
 function* logIn(action) {
   try {
-    console.log('saga logIn');
-    // const result = yield call(logInAPI, action.data); // folk는 비동기 함수 호출 non-blocking
-    yield delay(1000);
+    const result = yield call(logInAPI, action.data);
+    // yield delay(1000);
     yield put({
       type: LOG_IN_SUCCESS,
-      data: action.data,
+      data: result.data,
     });
   } catch (err) {
     yield put({
@@ -40,12 +39,12 @@ function* logIn(action) {
 }
 
 function logOutAPI() {
-  return axios.post('/api/logout');
+  return axios.post('/user/logout');
 }
 
 function* logOut() {
   try {
-    // const result = yield call(logOutAPI); // folk는 비동기 함수 호출 non-blocking
+    // const result = yield call(logOutAPI);
     yield delay(1000);
     yield put({
       type: LOG_OUT_SUCCESS,
@@ -59,7 +58,7 @@ function* logOut() {
 }
 
 function signUpAPI(data) {
-  return axios.post('http://localhost:3065/user', data); // data = {email, nickname, password}
+  return axios.post('/user', data); // data = {email, nickname, password}
   // GET과 DELETE는 2번째 인수로 데이터를 못넘기는데, POST,PUT,PATCH는 데이터를 넘겨줄 수 있음
 }
 

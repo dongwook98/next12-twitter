@@ -15,16 +15,17 @@ router.post('/login', (req, res, next) => {
       return next(err);
     }
     if (clientErr) {
+      console.log('에러', clientErr);
       return res.status(401).send(clientErr.reason); // 401: 허가되지않은
     }
+    // 패스포트 로그인
     return req.login(user, async (loginErr) => {
-      // 패스포트 로그인
       if (loginErr) {
         console.error(loginErr);
         return next(loginErr);
       }
-      // 찐 로그인
-      return res.json(user);
+      // req.login을 하면 res.setHeader('Cookie', '랜덤한 문자열') 이런걸 내부적으로 처리 , 알아서 세션이랑도 연결
+      return res.status(200).json(user); // 패스포트 로그인까지 성공하면 프론트로 응답
     });
   })(req, res, next);
 });

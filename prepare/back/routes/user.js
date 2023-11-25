@@ -2,10 +2,11 @@ const express = require('express');
 const bcrypt = require('bcrypt'); // 비밀번호 해쉬해주는 bcrypt 불러오기
 const passport = require('passport');
 const { User, Post } = require('../models'); // db 불러와서 구조분해할당
+const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
 const router = express.Router();
 
 // POST /user/login
-router.post('/login', (req, res, next) => {
+router.post('/login', isNotLoggedIn, (req, res, next) => {
   // 미들웨어 확장하는 방법
   // 패스포트 로그인 전략 실행
   passport.authenticate('local', (err, user, clientErr) => {
@@ -50,7 +51,7 @@ router.post('/login', (req, res, next) => {
 });
 
 // POST /user/
-router.post('/', async (req, res, next) => {
+router.post('/', isNotLoggedIn, async (req, res, next) => {
   try {
     // 혹시나 기존에 있던 사용자중에 프론트에서 보낸 이메일이랑 같은 걸 쓰고 있는 사용자가 있는지 있다면 그거를 exUser에다가 저장하기
     const exUser = await User.findOne({
@@ -82,9 +83,9 @@ router.post('/', async (req, res, next) => {
   }
 });
 
-router.post('/logout', (req, res) => {
+router.post('/logout', isLoggedIn, (req, res) => {
   req.logout(() => {
-    res.redirect('/');
+    res.send('ok');
   });
 });
 

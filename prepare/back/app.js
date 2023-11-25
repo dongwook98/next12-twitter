@@ -30,6 +30,7 @@ passportConfig();
 app.use(
   cors({
     origin: true,
+    credentials: true,
   })
 );
 // 프론트에서 보낸 데이터를 req.body 안에다가 넣어주는 역할
@@ -39,11 +40,13 @@ app.use(express.urlencoded({ extended: true })); // 폼 서브밋을 했을때 u
 
 // 세션/쿠키 설정
 app.use(cookieParser(process.env.COOKIE_SECRET));
-app.use(session({
-  saveUninitialized: false,
-  resave: false,
-  secret: process.env.COOKIE_SECRET,
-}));
+app.use(
+  session({
+    saveUninitialized: false,
+    resave: false,
+    secret: process.env.COOKIE_SECRET,
+  })
+);
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -63,6 +66,9 @@ app.get('/posts', (req, res) => {
 // 분리한 라우터들 등록하기
 app.use('/post', postRouter);
 app.use('/user', userRouter);
+
+// 에러처리 미들웨어
+// app.use((err, req, res, next) => {});
 
 app.listen(3065, () => {
   console.log('서버 실행 중');

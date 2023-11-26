@@ -2,6 +2,7 @@ import styled, { createGlobalStyle } from 'styled-components';
 import { CloseOutlined } from '@ant-design/icons';
 
 export const Overlay = styled.div`
+  /* 전체 화면 */
   position: fixed;
   z-index: 5000;
   top: 0;
@@ -17,6 +18,7 @@ export const Header = styled.header`
   padding: 0;
   text-align: center;
 
+  /* 자손 선택자 */
   & h1 {
     margin: 0;
     font-size: 17px;
@@ -53,6 +55,7 @@ export const ImgWrapper = styled.div`
 export const Indicator = styled.div`
   text-align: center;
 
+  /* 자식 선택자 */
   & > div {
     width: 75px;
     height: 30px;

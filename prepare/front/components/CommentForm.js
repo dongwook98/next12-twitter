@@ -21,6 +21,7 @@ const CommentForm = ({ post }) => {
     console.log(post.id, commentText);
     dispatch({
       type: ADD_COMMENT_REQUEST,
+      // 댓글을 제출했을때 post.id를 넘겨줘야 어떤 게시글에 속한 댓글인지 구분 가능
       data: { content: commentText, postId: post.id, userId: id },
     });
   }, [commentText, id]);

@@ -38,12 +38,14 @@ const AppLayout = ({ children }) => {
       </Menu>
       <Row gutter={8}>
         <Col xs={24} md={6}>
+          {/* 로그인했을때는 UserProfile 컴포넌트 활성화 */}
           {me ? <UserProfile /> : <LoginForm />}
         </Col>
         <Col xs={24} md={12}>
           {children}
         </Col>
         <Col xs={24} md={6}>
+          {/* target='_blank' 했을때는 보안을 위해 rel='noreferrer noopener' 추가 */}
           <a href='https://github.com/dongwook98/next12-twitter' target='_blank' rel='noreferrer noopener'>
             Made by dongwook
           </a>
@@ -54,7 +56,7 @@ const AppLayout = ({ children }) => {
 };
 
 AppLayout.propTypes = {
-  children: PropTypes.node.isRequired, // node: 리액트의 노드 리턴안에 들어갈수있는것들이 모두 노드!
+  children: PropTypes.node.isRequired, // node: 리액트의 노드라는뜻, 리턴안에 들어갈수있는것들이 모두 노드
 };
 
 export default AppLayout;

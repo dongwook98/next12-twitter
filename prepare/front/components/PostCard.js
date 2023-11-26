@@ -12,11 +12,13 @@ import { REMOVE_POST_REQUEST } from '../reducers/post';
 const PostCard = ({ post }) => {
   const dispatch = useDispatch();
   const { removePostLoading } = useSelector((state) => state.post);
+
   const [liked, setLiked] = useState(false);
-  const [commentFormOpened, setCommentFormOpened] = useState(false);
   const onToggleLike = useCallback(() => {
     setLiked((prev) => !prev);
   }, []);
+
+  const [commentFormOpened, setCommentFormOpened] = useState(false);
   const onToggleComment = useCallback(() => {
     setCommentFormOpened((prev) => !prev);
   }, []);
@@ -28,11 +30,13 @@ const PostCard = ({ post }) => {
     });
   }, []);
 
-  const id = useSelector((state) => state.user.me?.id);
+  // me가 있을시에만 id에 접근 (옵셔널 체이닝)
+  const id = useSelector((state) => state.user.me?.id); // state.user.me && state.user.me.id
 
   return (
     <div style={{ marginBottom: 20 }}>
       <Card
+        // 이미지가 1개이상일때만 PostImages 컴포넌트 활성화
         cover={post.Images[0] && <PostImages images={post.Images} />}
         actions={[
           <RetweetOutlined key='retweet' />,
@@ -46,6 +50,7 @@ const PostCard = ({ post }) => {
             key='more'
             content={
               <Button.Group>
+                {/* 로그인을 하고 게시글의 유저 id가 로그인한 유저 id와 같으면 수정,삭제 버튼 보이게 */}
                 {(id && post.User.id) === id ? (
                   <>
                     <Button>수정</Button>
@@ -72,6 +77,7 @@ const PostCard = ({ post }) => {
       </Card>
       {commentFormOpened && (
         <div>
+          {/* post 넘겨주는 이유 : 댓글작성할때 post의 id가 필요 */}
           <CommentForm post={post} />
           <List
             header={`${post.Comments.length}개의 댓글`}

@@ -60,7 +60,7 @@ const dummyUser = (data) => ({
   Followers: [{ nickname: '김예리' }, { nickname: '지드래곤' }, { nickname: '전우진' }],
 });
 
-// action creator
+// 동적 액션 생성기
 export const loginRequestAction = (data) => {
   return {
     type: LOG_IN_REQUEST,

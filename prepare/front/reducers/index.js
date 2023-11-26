@@ -1,3 +1,4 @@
+// 서버 사이드 렌더링을 위한 HYDRATE
 import { HYDRATE } from 'next-redux-wrapper';
 import { combineReducers } from 'redux';
 
@@ -5,7 +6,9 @@ import user from './user';
 import post from './post';
 
 // (이전상태, 액션) => 다음상태
+// combineReducers가 쪼갠 reducer들을 합쳐줌
 const rootReducer = combineReducers({
+  // HYDRATE(서버 사이드 렌더링)를 위해서 index reducer 추가
   index: (state = {}, action) => {
     switch (action.type) {
       case HYDRATE:
@@ -14,9 +17,10 @@ const rootReducer = combineReducers({
       default:
         return state;
     }
-  }, // HYDRATE(서버 사이드 렌더링)를 위해서 index reducer 추가
+  },
+  // combineReducers가 user와 post의 initialState를 알아서 합쳐서 넣어준다.
   user,
   post,
-}); // combineReducers가 user와 post의 intailState를 알아서 넣어줌
+});
 
 export default rootReducer;

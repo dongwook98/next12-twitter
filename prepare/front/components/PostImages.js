@@ -43,6 +43,7 @@ const PostImages = ({ images }) => {
       </>
     );
   }
+  // 게시글 이미지가 3개이상일때 더보기 버튼 활성화
   return (
     <>
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>

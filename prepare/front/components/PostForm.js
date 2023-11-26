@@ -9,6 +9,7 @@ const PostForm = () => {
   const dispatch = useDispatch();
   const [text, onChangeText, setText] = useInput('');
 
+  // setText('')를 dispatch(addPost(text)); 밑에 두면 서버쪽에서 문제가 났을때도 게시글을 지워버리기 때문에 로직 분리
   useEffect(() => {
     if (addPostDone) {
       setText('');
@@ -19,6 +20,7 @@ const PostForm = () => {
     dispatch(addPost(text));
   }, [text]);
 
+  // 숨겨놓은 이미지 업로드 버튼 클릭
   const imageInput = useRef();
   const onClickImageUpload = useCallback(() => {
     imageInput.current.click();
@@ -36,6 +38,7 @@ const PostForm = () => {
       </div>
       <div>
         {imagePaths.map((v) => (
+          // 게시글 폼에 이미지 업로드한것들 미리보기
           <div key={v} style={{ display: 'inline-block' }}>
             <img src={v} alt={v} style={{ width: '200px' }} />
             <div>

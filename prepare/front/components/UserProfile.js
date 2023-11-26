@@ -13,7 +13,6 @@ const UserProfile = () => {
   const { me, logOutLoading } = useSelector((state) => state.user);
 
   const onLogout = useCallback(() => {
-    // setIsLoggedIn(false);
     dispatch(logoutRequestAction());
   }, []);
 

@@ -11,7 +11,10 @@ const Home = () => {
   const { me } = useSelector((state) => state.user);
   const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector((state) => state.post);
 
-  // Home 컴포넌트 마운트시 LOAD_POSTS_REQUEST 액션 실행 -> Saga에 등록해둔 loadPosts 실행(서버와 통신) -> 성공시 LOAD_POSTS_SUCCESS 액션 실행 + 서버에서 받아온 데이터 reducer에 전달 -> reducer에 적어준대로 상태 업데이트
+  /**
+   * Home 컴포넌트 마운트시 LOAD_POSTS_REQUEST 액션 실행 -> Saga에 등록해둔 loadPosts 실행(서버와 통신) ->
+   * 성공시 LOAD_POSTS_SUCCESS 액션 실행 + 서버에서 받아온 데이터 reducer에 전달 -> reducer에 적어준대로 상태 업데이트
+   */
   useEffect(() => {
     dispatch({
       type: LOAD_POSTS_REQUEST,
@@ -40,7 +43,7 @@ const Home = () => {
     <AppLayout>
       {/* 로그인했을때는 PostForm 컴포넌트 활성화 */}
       {me && <PostForm />}
-      {/* 게시글들 map()으로 매핑 */}
+      {/* 게시글들 map()으로 PostCard 컴포넌트에 매핑 */}
       {mainPosts.map((post) => (
         <PostCard key={post.id} post={post} />
       ))}

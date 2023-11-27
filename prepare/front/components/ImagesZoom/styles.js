@@ -69,6 +69,7 @@ export const Indicator = styled.div`
   }
 `;
 
+// 글로벌스타일로 antd이 갖고있는 고유한 css문제 덮어씌워서 해결
 export const Global = createGlobalStyle`
   .slick-slide {
     display: inline-block;

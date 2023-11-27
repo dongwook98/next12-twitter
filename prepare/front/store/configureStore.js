@@ -22,7 +22,7 @@ const configureStore = () => {
   // enhancer: 확장
   const enhancer =
     process.env.NODE_ENV === 'production'
-      ? compose(applyMiddleware(...middlewares)) // 배포용일때는 데브툴사용x
+      ? compose(applyMiddleware(...middlewares)) // 배포용일때는 데브툴 사용X
       : composeWithDevTools(applyMiddleware(...middlewares)); // 개발용일때는 데브툴사용
   const store = createStore(reducer, enhancer);
   store.sagaTask = sagaMiddleware.run(rootSaga);

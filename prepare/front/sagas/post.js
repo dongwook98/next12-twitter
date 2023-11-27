@@ -24,7 +24,7 @@ function loadPostsAPI(data) {
 
 function* loadPosts(action) {
   try {
-    // const result = yield call(loadPostsAPI, action.data); // folk는 비동기 함수 호출 non-blocking
+    // const result = yield call(loadPostsAPI, action.data);
     yield delay(1000);
     yield put({
       type: LOAD_POSTS_SUCCESS,
@@ -67,7 +67,7 @@ function removePostAPI(data) {
 
 function* removePost(action) {
   try {
-    // const result = yield call(addPostAPI, action.data); // folk는 비동기 함수 호출 non-blocking
+    // const result = yield call(addPostAPI, action.data);
     yield delay(1000);
     const id = shortId.generate();
     yield put({

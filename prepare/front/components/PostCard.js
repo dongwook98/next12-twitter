@@ -72,6 +72,7 @@ const PostCard = ({ post }) => {
         <Card.Meta
           avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
           title={post.User.nickname}
+          // 해시태그 기능을 처리하기 위해 PostCardContent 컴포넌트 분리
           description={<PostCardContent postData={post.content} />}
         />
       </Card>

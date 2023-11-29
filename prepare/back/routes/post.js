@@ -4,8 +4,9 @@ const { Post } = require('../models');
 const { isLoggedIn } = require('./middlewares');
 
 const router = express.Router();
+
+// POST /post
 router.post('/', isLoggedIn, async (req, res, next) => {
-  // POST /post
   try {
     const post = await Post.create({
       content: req.body.content,
@@ -32,8 +33,8 @@ router.post('/', isLoggedIn, async (req, res, next) => {
   }
 });
 
+// POST /post/1/comment
 router.post('/:postId/comment', isLoggedIn, async (req, res) => {
-  // POST /post/1/comment
   try {
     const post = await Post.findOne({
       where: { id: req.params.postId },
@@ -53,8 +54,8 @@ router.post('/:postId/comment', isLoggedIn, async (req, res) => {
   }
 });
 
+// DELETE /post
 router.delete('/', (req, res) => {
-  // DELETE /post
   res.json({ id: 1 });
 });
 

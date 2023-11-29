@@ -1,10 +1,14 @@
-const Sequelize = require('sequelize'); // 시퀄라이즈 불러오기
-const env = process.env.NODE_ENV || 'development'; // 기본값으로 development
+// 시퀄라이즈 불러오기
+const Sequelize = require('sequelize');
+// 기본값으로 development
+const env = process.env.NODE_ENV || 'development';
 const config = require('../config/config')[env];
 const db = {};
 
-const sequelize = new Sequelize(config.database, config.username, config.password, config); // 시퀄라이즈가 노드랑 mysql을 연결해주는걸 도와줌
-// 시퀄라이즈는 내부적으로 mysql2를 사용해서 mysql2 드라이버에 설정 정보들을 보내줌
+// 시퀄라이즈는 내부적으로 mysql2를 사용해서 mysql2 드라이버에 설정 정보들을 보내줘서
+// 시퀄라이즈가 노드랑 mysql을 연결해주는걸 도와줌
+// 연결 성공하면 sequelize 객체에 연결 정보가 들어있다.
+const sequelize = new Sequelize(config.database, config.username, config.password, config);
 
 db.Comment = require('./comment')(sequelize, Sequelize);
 db.Hashtag = require('./hashtag')(sequelize, Sequelize);

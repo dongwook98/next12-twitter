@@ -1,15 +1,15 @@
 // 노드에서 제공하는 http 모듈이 서버 역할을 해준다. 노드는 자바스크립트 런타임이지 서버가 아니다.
 // 단, http 모듈로는 라우터 쪼개기가 어려워서 우리는 express라는 프레임워크를 사용한다.
 // const http = require('http');
-
 const express = require('express');
+// cors 미들웨어 불러오기
 const cors = require('cors');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
-// 분리한 라우터들 불러오기
 const passport = require('passport');
 const dotenv = require('dotenv');
 
+// 분리한 라우터들 불러오기
 const postRouter = require('./routes/post');
 const userRouter = require('./routes/user');
 // models/index.js에 있는 db 불러오기
@@ -55,12 +55,25 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+/**
+ * HTTP 메서드
+ *
+ * get -> 가져오다
+ * post -> 생성하다
+ * put -> 전체 수정
+ * delete -> 제거
+ * patch -> 부분 수정
+ * options -> 찔러보기
+ * head -> 헤더만 가져오기
+ */
 app.get('/', (req, res) => {
-  res.send('hello express');
   console.log(req.url, req.method);
+  // 문자열 응답
+  res.send('hello express');
 });
 
 app.get('/posts', (req, res) => {
+  // 이런식으로 json 응답 가능 (보통 데이터들은 json 객체로 많이 응답한다.)
   res.json([
     { id: 1, content: 'hello' },
     { id: 2, content: 'hello2' },
@@ -69,12 +82,14 @@ app.get('/posts', (req, res) => {
 });
 
 // 분리한 라우터들 등록하기
+// 첫번째 인수로 주소를 전달하였는데 이 주소가 postRouter의 라우터 주소에 prefix로 붙는다. (중복 제거)
 app.use('/post', postRouter);
 app.use('/user', userRouter);
 
-// 에러처리 미들웨어
+// 에러처리 미들웨어가 내부적으로 존재함
 // app.use((err, req, res, next) => {});
 
+// 포트 번호 지정 가능
 app.listen(3065, () => {
   console.log('서버 실행 중');
 });

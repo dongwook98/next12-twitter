@@ -24,14 +24,15 @@ function logInAPI(data) {
 }
 
 /**
- * 비동기 액션 생성자를 처리하는 제너레이터 함수
- * dispatch({ type: LOG_IN_REQUEST })할 때 action자체({ type: LOG_IN_REQUEST })가 logIn 매개변수로 전달
+ * 비동기 액션을 처리하는 제너레이터 함수
+ * dispatch({ type: LOG_IN_REQUEST })할 때
+ * action 자체({ type: LOG_IN_REQUEST, data })가 logIn 매개변수로 전달
  */
 function* logIn(action) {
   try {
     /**
      * 서버 요청(logInAPI) 실행하고 결괏값 저장
-     * 이때 call은 함수를 동기적으로 호출, 나머지 매개변수는 호출한 함수에 전달된다.
+     * 이때 call은 함수를 동기적으로 호출, 나머지 매개변수는 호출한 함수에 전달
      * fork는 비동기 호출 -> 논블로킹 그러므로 여기서는 call만 써야한다.
      * 이펙트들 앞에는 yield를 붙여주는 이유는 테스트를 편하게 하기 위해서이다.
      */
@@ -69,8 +70,8 @@ function* logOut() {
 }
 
 function signUpAPI(data) {
-  return axios.post('/user', data); // data = {email, nickname, password}
   // GET과 DELETE는 2번째 인수로 데이터를 못넘기는데, POST,PUT,PATCH는 데이터를 넘겨줄 수 있음
+  return axios.post('/user', data); // data = {email, nickname, password}
 }
 
 function* signUp(action) {
@@ -158,8 +159,7 @@ function* watchSignUp() {
 }
 
 export default function* userSaga() {
-  // 우리가 만든 비동기 액션을 넣어준다.
   // all은 배열을 받는데, 배열 안의 것들을 동시에 실행
-  // fork는 함수를 비동기 호출을 한다.
+  // fork는 함수를 비동기 호출
   yield all([fork(watchFollow), fork(watchUnfollow), fork(watchLogIn), fork(watchLogOut), fork(watchSignUp)]);
 }

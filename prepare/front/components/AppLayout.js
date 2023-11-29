@@ -13,7 +13,7 @@ const InputSearch = styled(Input.Search)`
 
 const AppLayout = ({ children }) => {
   const { me } = useSelector((state) => state.user);
-  // const [isLoggedIn, setIsLoggedIn] = useState(false); // 더미 데이터
+  // const [isLoggedIn, setIsLoggedIn] = useState(false); // 더미 데이터로 로그인 한 것처럼 구현 가능
   return (
     <div>
       <Menu mode='horizontal'>

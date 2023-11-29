@@ -24,6 +24,7 @@ export const initialState = {
   loginData: {},
 };
 
+// 액션명들은 변수로 뺴주자. -> 오타 잡기 쉬움
 export const LOG_IN_REQUEST = 'LOG_IN_REQUEST';
 export const LOG_IN_SUCCESS = 'LOG_IN_SUCCESS';
 export const LOG_IN_FAILURE = 'LOG_IN_FAILURE';
@@ -48,6 +49,8 @@ export const UNFOLLOW_REQUEST = 'UNFOLLOW_REQUEST';
 export const UNFOLLOW_SUCCESS = 'UNFOLLOW_SUCCESS';
 export const UNFOLLOW_FAILURE = 'UNFOLLOW_FAILURE';
 
+// postSaga에서 유저 리듀서를 변경해줄 액션
+// 게시글 작성 시 me.Posts에도 게시글 id만 추가해줘야됨
 export const ADD_POST_TO_ME = 'ADD_POST_TO_ME';
 export const REMOVE_POST_OF_ME = 'REMOVE_POST_OF_ME';
 

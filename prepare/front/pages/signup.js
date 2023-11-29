@@ -17,18 +17,21 @@ const Signup = () => {
   const { signUpLoading, signUpDone, signUpError, me } = useSelector((state) => state.user);
   const router = useRouter();
 
+  // 로그인을 하지 않고 회원가입 페이지 방문 시 홈페이지로 리다이렉트
   useEffect(() => {
     if (me) {
       router.replace('/');
     }
   }, [me]);
 
+  // 회원가입 성공 시 홈페이지로 리다이렉트
   useEffect(() => {
     if (signUpDone) {
       router.replace('/');
     }
   }, [signUpDone]);
 
+  // 회원가입 실패 시 서버에서 받아온 응답 데이터(실패 이유)를 alert
   useEffect(() => {
     if (signUpError) {
       alert(signUpError);
@@ -44,6 +47,7 @@ const Signup = () => {
   const onChangePasswordCheck = useCallback(
     (e) => {
       setPasswordCheck(e.target.value);
+      // 비밀번호 확인 부분이 작성한 비밀번호와 다르면 setPasswordCheckError(true)
       setPasswordCheckError(e.target.value !== password);
     },
     [password]
@@ -57,6 +61,7 @@ const Signup = () => {
   }, []);
 
   const onSubmit = useCallback(() => {
+    // 제출 시 한번 더 검사
     if (password !== passwordCheck) {
       return setPasswordCheckError(true);
     }

@@ -10,6 +10,7 @@ const Profile = () => {
   const { me } = useSelector((state) => state.user);
   const router = useRouter();
 
+  // 로그인 안하고 프로필페이지 접근시 홈페이지로 리다이렉트
   if (!me) {
     router.push('/');
     return null;

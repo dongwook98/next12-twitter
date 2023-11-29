@@ -7,12 +7,13 @@ import { FOLLOW_REQUEST, UNFOLLOW_REQUEST } from '../reducers/user';
 const FollowButton = ({ post }) => {
   const dispatch = useDispatch();
   const { me, followLoading, unfollowLoading } = useSelector((state) => state.user);
+  // 팔로잉 목록중에 유저의 id를 가지고 있는데 그 id가 게시글 작성자의 id와 같으면 이미 팔로잉한 사람이다.
   const isFollowing = me?.Followings.find((v) => v.id === post.User.id);
   const onClickButton = useCallback(() => {
     if (isFollowing) {
       dispatch({
         type: UNFOLLOW_REQUEST,
-        data: post.User.id,
+        data: post.User.id, // 게시글 작성자의 id만 있으면 팔로우, 언팔로우 가능
       });
     } else {
       dispatch({

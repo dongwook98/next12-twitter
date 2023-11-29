@@ -1,7 +1,9 @@
 // 서버 사이드 렌더링을 위한 HYDRATE
 import { HYDRATE } from 'next-redux-wrapper';
+// 쪼개 리듀서들을 합치기 위한 combineReducers 불러오기
 import { combineReducers } from 'redux';
 
+// 쪼갠 리듀서들 불러오기
 import user from './user';
 import post from './post';
 

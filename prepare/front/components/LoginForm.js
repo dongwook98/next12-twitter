@@ -15,7 +15,9 @@ const FormWrapper = styled(Form)`
 `;
 
 const LoginForm = () => {
+  // dispatch 함수 불러오기
   const dispatch = useDispatch();
+  // useSelector로 리덕스에 저장되있는 상태 가져오기
   const { logInLoading, logInError } = useSelector((state) => state.user);
   const [email, onChangeEmail] = useInput('');
   const [password, onChangePassword] = useInput('');

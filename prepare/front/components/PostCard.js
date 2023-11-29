@@ -50,7 +50,7 @@ const PostCard = ({ post }) => {
             key='more'
             content={
               <Button.Group>
-                {/* 로그인을 하고 게시글의 유저 id가 로그인한 유저 id와 같으면 수정,삭제 버튼 보이게 */}
+                {/* 로그인을 하고 게시글의 유저 id가 로그인한 유저 id와 같으면 수정,삭제 버튼 활성화 */}
                 {(id && post.User.id) === id ? (
                   <>
                     <Button>수정</Button>
@@ -67,6 +67,7 @@ const PostCard = ({ post }) => {
             <EllipsisOutlined />
           </Popover>,
         ]}
+        // 로그인을 했을때만 팔로우 버튼 활성화
         extra={id && <FollowButton post={post} />}
       >
         <Card.Meta

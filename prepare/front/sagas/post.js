@@ -28,6 +28,7 @@ function* loadPosts(action) {
     yield delay(1000);
     yield put({
       type: LOAD_POSTS_SUCCESS,
+      // LOAD_POSTS_SUCCESS 할 때 가짜 데이터 10개 생성
       data: generateDummyPost(10),
     });
   } catch (err) {
@@ -49,6 +50,7 @@ function* addPost(action) {
       type: ADD_POST_SUCCESS,
       data: result.data,
     });
+    // user reducer의 상태도 변경해야되므로 ADD_POST_TO_ME 액션도 실행
     yield put({
       type: ADD_POST_TO_ME,
       data: result.data.id,
@@ -107,6 +109,8 @@ function* addComment(action) {
 }
 
 function* watchLoadPosts() {
+  // 스크롤 이벤트 중첩 발생 해서 throttle 사용해서 5초 동안 요청 제한, 그러나 요청들을 취소는 하지 않아서 5초뒤에 실행됨
+  // 이러면 아예 요청을 한번만 보낼수 있는 방법을 생각해야한다. -> request를 하고 있다면 로딩이 true -> useEffect 사용해 loadPostLoading이 false일때만 요청을 보내자.
   yield throttle(5000, LOAD_POSTS_REQUEST, loadPosts);
 }
 

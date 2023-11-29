@@ -23,7 +23,15 @@ const Home = () => {
 
   useEffect(() => {
     function onScroll() {
+      /**
+       * window.scrollY: 얼마나 내렸는지
+       * document.documentElement.clientHeight: 화면에 보이는 길이
+       * document.documentElement.scrollHeight: 총 길이
+       * 끝까지 내렸을때 -> window.scrollY + document.documentElement.clientHeight === document.documentElement.scrollHeight
+       */
       if (window.scrollY + document.documentElement.clientHeight > document.documentElement.scrollHeight - 300) {
+        // 더 불러올 게시글들이 있고 로딩중이 아닐 때 LOAD_POSTS_REQUEST 실행
+        // 스크롤 이벤트가 중첩으로 일어나도 loadPostLoading으로 요청이 한번만 가게 제한
         if (hasMorePosts && !loadPostsLoading) {
           dispatch({
             type: LOAD_POSTS_REQUEST,

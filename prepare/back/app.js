@@ -1,3 +1,7 @@
+// 노드에서 제공하는 http 모듈이 서버 역할을 해준다. 노드는 자바스크립트 런타임이지 서버가 아니다.
+// 단, http 모듈로는 라우터 쪼개기가 어려워서 우리는 express라는 프레임워크를 사용한다.
+// const http = require('http');
+
 const express = require('express');
 const cors = require('cors');
 const session = require('express-session');
@@ -26,7 +30,8 @@ db.sequelize
 
 passportConfig();
 
-// use안에들어간애들을 미들웨어라고 부름 express의 기능을 추가
+// use안에들어간애들을 미들웨어라고 부름
+// 미들웨어는 express의 기능을 추가해줌
 app.use(
   cors({
     origin: true,

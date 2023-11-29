@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { Form, Input } from 'antd';
 
 const NicknameEditForm = () => {
-  // 인라인 스타일 최적화
+  // 스타일드 컴포넌트 쓰기 싫다면 useMemo로 최적화
   const style = useMemo(
     () => ({
       marginBottom: '20px',

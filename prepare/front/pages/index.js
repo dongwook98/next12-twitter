@@ -5,6 +5,7 @@ import AppLayout from '../components/AppLayout';
 import PostForm from '../components/PostForm';
 import PostCard from '../components/PostCard';
 import { LOAD_POSTS_REQUEST } from '../reducers/post';
+import { LOAD_MY_INFO_REQUEST } from '../reducers/user';
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -16,6 +17,11 @@ const Home = () => {
    * 성공시 LOAD_POSTS_SUCCESS 액션 실행 + 서버에서 받아온 데이터 reducer에 전달 -> reducer에 적어준대로 상태 업데이트
    */
   useEffect(() => {
+    // 새로고침 시 로그인 상태 복구
+    dispatch({
+      type: LOAD_MY_INFO_REQUEST,
+    });
+    // 페이지 접속 시 게시글 불러오기
     dispatch({
       type: LOAD_POSTS_REQUEST,
     });

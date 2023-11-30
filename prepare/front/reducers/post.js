@@ -1,7 +1,7 @@
-import shortId from 'shortid';
+// import shortId from 'shortid';
 import { produce } from 'immer';
-import { faker } from '@faker-js/faker/locale/ko';
-faker.seed(123);
+// import { faker } from '@faker-js/faker/locale/ko';
+// faker.seed(123);
 
 export const initialState = {
   mainPosts: [],
@@ -22,31 +22,31 @@ export const initialState = {
 };
 
 // faker 사용해서 동적 더미데이터 생성
-export const generateDummyPost = (number) =>
-  Array(number)
-    .fill()
-    .map(() => ({
-      id: shortId.generate(),
-      User: {
-        id: shortId.generate(),
-        nickname: faker.person.fullName(),
-      },
-      content: faker.lorem.paragraph(),
-      Images: [
-        {
-          src: faker.image.url(),
-        },
-      ],
-      Comments: [
-        {
-          User: {
-            id: shortId.generate(),
-            nickname: faker.person.fullName(),
-          },
-          content: faker.lorem.sentence(),
-        },
-      ],
-    }));
+// export const generateDummyPost = (number) =>
+//   Array(number)
+//     .fill()
+//     .map(() => ({
+//       id: shortId.generate(),
+//       User: {
+//         id: shortId.generate(),
+//         nickname: faker.person.fullName(),
+//       },
+//       content: faker.lorem.paragraph(),
+//       Images: [
+//         {
+//           src: faker.image.url(),
+//         },
+//       ],
+//       Comments: [
+//         {
+//           User: {
+//             id: shortId.generate(),
+//             nickname: faker.person.fullName(),
+//           },
+//           content: faker.lorem.sentence(),
+//         },
+//       ],
+//     }));
 
 export const LOAD_POSTS_REQUEST = 'LOAD_POSTS_REQUEST';
 export const LOAD_POSTS_SUCCESS = 'LOAD_POSTS_SUCCESS';
@@ -126,6 +126,8 @@ const reducer = (state = initialState, action) => {
       case ADD_POST_SUCCESS:
         draft.addPostLoading = false;
         draft.addPostDone = true;
+        // draft.mainPosts.unshift(dummyPost(action.data));
+        // dummyComment 사용하지 않고 실제 서버에서 받아온 데이터 추가
         draft.mainPosts.unshift(action.data);
         break;
       case ADD_POST_FAILURE:
@@ -154,6 +156,8 @@ const reducer = (state = initialState, action) => {
         break;
       case ADD_COMMENT_SUCCESS: {
         const post = draft.mainPosts.find((v) => v.id === action.data.PostId);
+        // post.Comments.unshift(dummyComment(action.data.content));
+        // dummyComment 사용하지 않고 실제 서버에서 받아온 데이터 추가
         post.Comments.unshift(action.data);
         draft.addCommentLoading = false;
         draft.addCommentDone = true;

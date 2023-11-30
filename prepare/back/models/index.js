@@ -10,13 +10,15 @@ const db = {};
 // 연결 성공하면 sequelize 객체에 연결 정보가 들어있다.
 const sequelize = new Sequelize(config.database, config.username, config.password, config);
 
+// 만든 모델들 불러와서 실행
+// 만든 모델들을 db 객체에 넣기
 db.Comment = require('./comment')(sequelize, Sequelize);
 db.Hashtag = require('./hashtag')(sequelize, Sequelize);
 db.Image = require('./image')(sequelize, Sequelize);
 db.Post = require('./post')(sequelize, Sequelize);
 db.User = require('./user')(sequelize, Sequelize);
 
-// [Comment, Hashtag, Image, Post, User] 반복문으로 돌면서 associate
+// 만든 모델들 반복문으로 돌면서 associate 실행해서 관계들 연결
 Object.keys(db).forEach((modelName) => {
   if (db[modelName].associate) {
     db[modelName].associate(db);

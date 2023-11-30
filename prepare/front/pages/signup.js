@@ -20,6 +20,7 @@ const Signup = () => {
   // 로그인을 하지 않고 회원가입 페이지 방문 시 홈페이지로 리다이렉트
   useEffect(() => {
     if (me) {
+      // replace는 기록에서 사라져서 페이지 뒤로가기 하지 못함
       router.replace('/');
     }
   }, [me]);

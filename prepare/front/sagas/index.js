@@ -7,7 +7,7 @@ import userSaga from './user';
 
 // 백엔드 요청 시 주소 중복 제거
 axios.defaults.baseURL = 'http://localhost:3065';
-// withCredentials: 프론트 -> 백엔드로 쿠키
+// 프론트에서 백엔드로 쿠키 전달하려면 withCredentials를 true로 설정
 axios.defaults.withCredentials = true;
 
 export default function* rootSaga() {

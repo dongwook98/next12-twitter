@@ -1,3 +1,4 @@
+// 닷엔브를 쓰기위해 json파일을 js파일로 변경
 const dotenv = require('dotenv');
 
 dotenv.config();

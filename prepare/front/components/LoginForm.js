@@ -22,6 +22,7 @@ const LoginForm = () => {
   const [email, onChangeEmail] = useInput('');
   const [password, onChangePassword] = useInput('');
 
+  // 로그인 실패 시 서버에서 에러 응답 데이터 받아와서 alert
   useEffect(() => {
     if (logInError) {
       alert(logInError);

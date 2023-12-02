@@ -5,6 +5,7 @@ const { isLoggedIn } = require('./middlewares');
 
 const router = express.Router();
 
+// 게시글 작성
 // POST /post
 router.post('/', isLoggedIn, async (req, res, next) => {
   try {
@@ -42,6 +43,7 @@ router.post('/', isLoggedIn, async (req, res, next) => {
   }
 });
 
+// 댓글 작성
 // POST /post/1/comment
 // :postId와 같이 주소 부분에서 동적으로 바뀌는 부분을 파라미터라고 부른다.
 router.post('/:postId/comment', isLoggedIn, async (req, res) => {
@@ -56,9 +58,11 @@ router.post('/:postId/comment', isLoggedIn, async (req, res) => {
     // 프론트에서 받은 데이터 Comment 테이블에 생성
     const comment = await Comment.create({
       content: req.body.content,
+      // 파라미터는 문자열이기 때문에 parseInt로 숫자로 변환
       PostId: parseInt(req.params.postId, 10),
       UserId: req.user.id,
     });
+    // 프론트로 응답해줄때 댓글 작성자 데이터 추가해서 응답
     const fullComment = await Comment.findOne({
       where: { id: comment.id },
       include: [

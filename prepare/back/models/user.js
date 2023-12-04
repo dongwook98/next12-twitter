@@ -57,6 +57,11 @@ module.exports = (sequelize, DataTypes) => {
   User.associate = (db) => {
     db.User.hasMany(db.Post);
     db.User.hasMany(db.Comment);
+    /**
+     * through는 belongsToMany 관계에서 중간 테이블을 직접 지정할 때 사용됩니다.
+     * as는 모델 간의 관계를 지정할 때, 해당 관계에 사용될 별칭을 설정할 때 사용됩니다.
+     * foreignKey는 외래 키의 이름을 설정할 때 사용됩니다.
+     */
     // getLiked -> 내가 좋아요를 누른 게시글 가져오기
     db.User.belongsToMany(db.Post, { through: 'Like', as: 'Liked' });
     // getFollowers -> 나의 팔로워들 가져오기, 이 때 테이블에서 팔로잉을 먼저 찾아야하므로 foreignKey는 FollowingId가 된다.

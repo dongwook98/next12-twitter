@@ -1,19 +1,23 @@
 const passport = require('passport');
 // 나중을 위해 이름 바꿔놓기
 const { Strategy: LocalStrategy } = require('passport-local');
+// bcrypt는 해시 함수를 사용하여 비밀번호와 같은 민감한 정보를 안전하게 저장하기 위한 라이브러리입니다.
+// 주로 사용자 인증 시에 비밀번호를 안전하게 저장하는 데에 활용됩니다.
 const bcrypt = require('bcrypt');
+
 const { User } = require('../models');
 
 module.exports = () => {
+  // Passport에 LocalStrategy 등록
   passport.use(
     // 로컬 로그인 전략 설정
     new LocalStrategy(
       // req.body에 대한 설정
       {
-        usernameField: 'email', // req.body.email 이라고 적어준 것
+        usernameField: 'email', // req.body.email 이라고 적어준 것과 같음
         passwordField: 'password',
       },
-      // 여기서 로그인 전략을 세우면 됨
+      // 여기서 로컬 로그인 전략을 세우면 됨
       async (email, password, done) => {
         try {
           // User 테이블에서 입력한 이메일의 유저가 있는지 찾기
@@ -33,7 +37,7 @@ module.exports = () => {
           const result = await bcrypt.compare(password, user.password);
           // 비밀번호가 일치하면 로그인 성공이니까 사용자정보 넘겨줌
           if (result) {
-            return done(null, user);
+            return done(null, user); // 로컬 로그인 성공
           }
           // 비밀번호가 일치하지 않으니까 클라이언트 에러 넘겨줌
           return done(null, false, { reason: '비밀번호가 틀렸습니다. ' });

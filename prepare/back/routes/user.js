@@ -1,10 +1,11 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const passport = require('passport');
-// 만든 모델들 불러와서 구조분해할당
+
 const { User, Post } = require('../models');
 // 우리가 로그인, 로그아웃 상태인지 검사하려고 만든 미들웨어 불러오기
 const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
+
 const router = express.Router();
 
 /**
@@ -17,6 +18,7 @@ router.get('/', async (req, res, next) => {
     if (req.user) {
       const fullUserWithoutPassword = await User.findOne({
         where: { id: req.user.id },
+        // 사용자 데이터에서 비밀번호 제거
         attributes: {
           exclude: ['password'],
         },
@@ -58,19 +60,22 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
    * authenticate('local') : 우리가 만든 로컬 로그인 전략 실행
    * authenticate 2번째 콜백 함수의 매개변수로 done에서 넣은값들이 순서대로 전달됨
    */
-  passport.authenticate('local', (err, user, clientErr) => {
+  passport.authenticate('local', (err, user, info) => {
     // 서버 에러가 나면
     if (err) {
       console.error(err);
       return next(err);
     }
     // 클라이언트 에러가 나면
-    if (clientErr) {
-      console.log('에러', clientErr);
-      return res.status(401).send(clientErr.reason); // 401: 허가되지않은
+    if (info) {
+      console.log('에러', info);
+      return res.status(401).send(info.reason); // 401: 허가되지않은
     }
     // 이 아래로 로컬 로그인 성공
     /**
+     * req.login(user, ...)은 사용자를 세션에 로그인시킵니다. Passport는 이 메서드를 사용하여 사용자를 세션에 저장하고,
+     * 이후의 요청에서 req.user로 사용자 정보에 접근할 수 있게 합니다.
+     *
      * 패스포트 로그인 실행
      * 패스포트 로그인하면 세션에 로그인 정보와 쿠키 저장하고 응답으로 쿠키 전달
      * 단, 세션에 로그인 정보를 통째로 다 들고 있으면 무거워서 id만 저장
@@ -119,11 +124,7 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
  */
 router.post('/', isNotLoggedIn, async (req, res, next) => {
   try {
-    /**
-     * 기존에 있던 사용자중에 프론트에서 보낸 이메일이랑 같은 걸 쓰고 있는 사용자가 있는지 있다면 그거를 exUser에다가 저장하기
-     * findOne도 비동기 함수
-     * where에는 조건을 넣어줌
-     */
+    // 기존에 있던 사용자중에 프론트에서 보낸 이메일이랑 같은 걸 쓰고 있는 사용자가 있는지 확인하고 있다면 그거를 exUser에다가 저장하기
     const exUser = await User.findOne({
       where: {
         email: req.body.email,
@@ -150,7 +151,11 @@ router.post('/', isNotLoggedIn, async (req, res, next) => {
     const hashedPassword = await bcrypt.hash(req.body.password, 12);
     // create가 비동기 함수이므로 await 붙여서 순서 맞춰주기
     await User.create({
-      email: req.body.email, // req.body는 axios 요청에서 넘겨준 데이터, 단 req.body를 쓰러면 추가로 미들웨어 등록해야함
+      /**
+       * req.body는 axios 요청에서 넘겨준 데이터
+       * 단 req.body를 쓰러면 추가로 미들웨어(express.json(), express.urlencoded) 등록해야함
+       */
+      email: req.body.email,
       nickname: req.body.nickname,
       password: hashedPassword,
     });

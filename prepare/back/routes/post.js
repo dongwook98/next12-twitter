@@ -17,17 +17,47 @@ try {
   fs.mkdirSync('uploads');
 }
 
+// Multer 미들웨어 설정
+const upload = multer({
+  // 업로드된 이미지를 저장할 디렉토리 설정
+  // 나중에는 클라우드 S3에 저장 -> 스케일링 하기위해
+  storage: multer.diskStorage({
+    destination(req, file, done) {
+      done(null, 'uploads');
+    },
+    filename(req, file, done) {
+      // 파일명 중복 막아주기
+      // 제로초.png
+      const ext = path.extname(file.originalname); // 확장자 추출(png)
+      const basename = path.basename(file.originalname, ext); // 제로초
+      done(null, basename + '_' + new Date().getTime() + ext); // 제로초_151515151123213.png
+    },
+  }),
+  limits: { fileSize: 20 * 1024 * 1024 }, // 20MB 제한
+});
+
 /**
  * 게시글 작성
  * POST /post
  */
-router.post('/', isLoggedIn, async (req, res, next) => {
+router.post('/', isLoggedIn, upload.none(), async (req, res, next) => {
   try {
     const post = await Post.create({
       content: req.body.content,
       // 라우터에 접근하면 deserializeUser가 실행되서 사용자 정보를 복구해서 req.user에 넣어준다.
       UserId: req.user.id,
     });
+    if (req.body.image) {
+      if (Array.isArray(req.body.image)) {
+        // 이미지를 여러 개 올리면 image: [제로초.png, 부기초.png]
+        const images = await Promise.all(req.body.image.map((image) => Image.create({ src: image })));
+        await post.addImages(images);
+      } else {
+        // 이미지를 하나만 올리면 image: 제로초.png
+        const image = await Image.create({ src: req.body.image });
+        await post.addImages(image);
+      }
+    }
     // 응답으로 게시글 데이터 보낼때 필요한 데이터 추가
     const fullPost = await Post.findOne({
       where: { id: post.id },
@@ -62,32 +92,23 @@ router.post('/', isLoggedIn, async (req, res, next) => {
   }
 });
 
-const upload = multer({
-  // 나중에는 클라우드 S3에 저장 -> 스케일링 하기위해
-  storage: multer.diskStorage({
-    destination(req, file, done) {
-      done(null, 'uploads');
-    },
-    filename(req, file, done) {
-      // 파일명 중복 막아주기
-      // 제로초.png
-      const ext = path.extname(file.originalname); // 확장자 추출(png)
-      const basename = path.basename(file.originalname, ext); // 제로초
-      done(null, basename + new Date().getTime() + ext); // 제로초151515151123213.png
-    },
-  }),
-  limits: { fileSize: 20 * 1024 * 1024 }, // 20MB 제한
-});
-// POST /post/images
+/**
+ * 이미지 업로드를 처리하는 라우트 설정
+ * POST /post/images
+ *
+ * upload.array('image')은 여러개의 파일을 업로드할 때 사용되는 Multer 미들웨어입니다.
+ * image은 클라이언트에서 전송된 폼 필드의 이름을 나타냅니다.
+ */
 router.post('/images', isLoggedIn, upload.array('image'), async (req, res, next) => {
   console.log(req.files);
   res.json(req.files.map((v) => v.filename));
 });
 
-// :postId와 같이 주소 부분에서 동적으로 바뀌는 부분을 파라미터라고 부른다.
 /**
- * 댓글 작성
+ * 댓글 작성 라우트 설정
  * POST /post/1/comment
+ *
+ * :postId와 같이 주소 부분에서 동적으로 바뀌는 부분을 파라미터라고 부른다.
  */
 router.post('/:postId/comment', isLoggedIn, async (req, res) => {
   try {

@@ -22,6 +22,11 @@ const FollowButton = ({ post }) => {
       });
     }
   }, [isFollowing]);
+
+  // 자기가 쓴 게시글은 팔로우 버튼 안보이게
+  if (post.User.id === me.id) {
+    return null;
+  }
   return (
     <Button loading={followLoading || unfollowLoading} onClick={onClickButton}>
       {isFollowing ? '언팔로우' : '팔로우'}

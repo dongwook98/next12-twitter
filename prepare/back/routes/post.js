@@ -25,14 +25,19 @@ router.post('/', isLoggedIn, async (req, res, next) => {
           model: Comment,
           include: [
             {
-              model: User,
+              model: User, // 댓글 작성자
               attributes: ['id', 'nickname'],
             },
           ],
         },
         {
-          model: User,
+          model: User, // 게시글 작성자
           attributes: ['id', 'nickname'],
+        },
+        {
+          model: User, // 좋아요 누른 사람
+          as: 'Likers',
+          attributes: ['id'],
         },
       ],
     });
@@ -43,9 +48,11 @@ router.post('/', isLoggedIn, async (req, res, next) => {
   }
 });
 
-// 댓글 작성
-// POST /post/1/comment
 // :postId와 같이 주소 부분에서 동적으로 바뀌는 부분을 파라미터라고 부른다.
+/**
+ * 댓글 작성
+ * POST /post/1/comment
+ */
 router.post('/:postId/comment', isLoggedIn, async (req, res) => {
   try {
     // 존재하지 않는 게시글에 댓글 달수도 있기 때문에 아래와 같이 처리
@@ -73,6 +80,46 @@ router.post('/:postId/comment', isLoggedIn, async (req, res) => {
       ],
     });
     res.status(201).json(fullComment);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+/**
+ * 좋아요 api
+ * PATCH /post/1/like
+ */
+router.patch('/:postId/like', async (req, res, next) => {
+  try {
+    const post = await Post.findOne({ where: { id: req.params.postId } });
+    if (!post) {
+      return res.status(403).send('게시글이 존재하지 않습니다.');
+    }
+    /**
+     * 관계 메서드
+     * 우리가 시퀄라이즈로 관계를 설정해놓은 모델간의 add,remove,get,set 메서드를 제공한다.
+     */
+    await post.addLikers(req.user.id);
+    res.json({ PostId: post.id, UserId: req.user.id });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+/**
+ * 좋아요 취소 api
+ * DELETE /post/1/like
+ */
+router.delete('/:postId/like', async (req, res, next) => {
+  try {
+    const post = await Post.findOne({ where: { id: req.params.postId } });
+    if (!post) {
+      return res.status(403).send('게시글이 존재하지 않습니다.');
+    }
+    await post.removeLikers(req.user.id);
+    res.json({ PostId: post.id, UserId: req.user.id });
   } catch (error) {
     console.error(error);
     next(error);

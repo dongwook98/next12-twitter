@@ -189,7 +189,7 @@ const reducer = (state = initialState, action) => {
         draft.removePostLoading = false;
         draft.removePostDone = true;
         // 불변성 안지키려면 splice()를 쓰는게 맞기는 한데, 2줄로 늘어나서 filter() 사용
-        draft.mainPosts = draft.mainPosts.filter((v) => v.id !== action.data);
+        draft.mainPosts = draft.mainPosts.filter((v) => v.id !== action.data.PostId);
         break;
       case REMOVE_POST_FAILURE:
         draft.removePostLoading = false;

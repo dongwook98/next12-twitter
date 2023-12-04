@@ -85,6 +85,8 @@ export const ADD_COMMENT_REQUEST = 'ADD_COMMENT_REQUEST';
 export const ADD_COMMENT_SUCCESS = 'ADD_COMMENT_SUCCESS';
 export const ADD_COMMENT_FAILURE = 'ADD_COMMENT_FAILURE';
 
+export const REMOVE_IMAGE = 'REMOVE_IMAGE';
+
 // 동적 액션 생성기
 export const addPost = (data) => ({
   type: ADD_POST_REQUEST,
@@ -123,6 +125,9 @@ const reducer = (state = initialState, action) => {
   // draft를 불변성 지키기 않고 수정하면 알아서 다음 state를 불변성 지키면서 만들어준다.
   return produce(state, (draft) => {
     switch (action.type) {
+      case REMOVE_IMAGE:
+        draft.imagePaths = draft.imagePaths.filter((v, i) => i !== action.data);
+        break;
       case UPLOAD_IMAGES_REQUEST:
         draft.uploadImagesLoading = true;
         draft.uploadImagesDone = false;
@@ -197,6 +202,7 @@ const reducer = (state = initialState, action) => {
         // draft.mainPosts.unshift(dummyPost(action.data));
         // dummyComment 사용하지 않고 실제 서버에서 받아온 데이터 추가
         draft.mainPosts.unshift(action.data);
+        draft.imagePaths = [];
         break;
       case ADD_POST_FAILURE:
         draft.addPostLoading = false;

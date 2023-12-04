@@ -1,7 +1,7 @@
 import React, { useCallback, useRef, useEffect } from 'react';
 import { Button, Form, Input } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import { addPost, UPLOAD_IMAGES_REQUEST } from '../reducers/post';
+import { addPost, UPLOAD_IMAGES_REQUEST, REMOVE_IMAGE, ADD_POST_REQUEST } from '../reducers/post';
 import useInput from '../hooks/useInput';
 
 const PostForm = () => {
@@ -17,8 +17,19 @@ const PostForm = () => {
   }, [addPostDone]);
 
   const onSubmit = useCallback(() => {
-    dispatch(addPost(text));
-  }, [text]);
+    if (!text || !text.trim()) {
+      alert('게시글을 작성하세요.');
+    }
+    const formData = new FormData();
+    imagePaths.forEach((p) => {
+      formData.append('image', p);
+    });
+    formData.append('content', text);
+    return dispatch({
+      type: ADD_POST_REQUEST,
+      data: formData,
+    });
+  }, [text, imagePaths]);
 
   // 숨겨놓은 이미지 업로드 버튼 클릭
   const imageInput = useRef();
@@ -39,6 +50,16 @@ const PostForm = () => {
       data: imageFormData,
     });
   }, []);
+
+  const onRemoveImage = useCallback(
+    (index) => () => {
+      dispatch({
+        type: REMOVE_IMAGE,
+        data: index,
+      });
+    },
+    []
+  );
   return (
     <Form style={{ margin: '10px 0 20px' }} encType='multipart/form-data' onFinish={onSubmit}>
       <Input.TextArea value={text} onChange={onChangeText} maxLength={140} placeholder='어떤 신기한 일이 있었나요?' />
@@ -57,12 +78,12 @@ const PostForm = () => {
         </Button>
       </div>
       <div>
-        {imagePaths.map((v) => (
+        {imagePaths.map((v, i) => (
           // 게시글 폼에 이미지 업로드한것들 미리보기
           <div key={v} style={{ display: 'inline-block' }}>
-            <img src={v} alt={v} style={{ width: '200px' }} />
+            <img src={`http://localhost:3065/${v}`} alt={v} style={{ width: '200px' }} />
             <div>
-              <Button>제거</Button>
+              <Button onClick={onRemoveImage(i)}>제거</Button>
             </div>
           </div>
         ))}

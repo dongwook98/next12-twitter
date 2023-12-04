@@ -14,9 +14,54 @@ import {
   LOAD_POSTS_REQUEST,
   LOAD_POSTS_SUCCESS,
   LOAD_POSTS_FAILURE,
+  LIKE_POST_REQUEST,
+  UNLIKE_POST_REQUEST,
+  LIKE_POST_SUCCESS,
+  LIKE_POST_FAILURE,
+  UNLIKE_POST_SUCCESS,
+  UNLIKE_POST_FAILURE,
 } from '../reducers/post';
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user';
 // import { generateDummyPost } from '../reducers/post';
+
+function likePostAPI(data) {
+  return axios.patch(`/post/${data}/like`);
+}
+
+function* likePost(action) {
+  try {
+    const result = yield call(likePostAPI, action.data);
+    yield put({
+      type: LIKE_POST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    yield put({
+      type: LIKE_POST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function unlikePostAPI(data) {
+  // 파라미터로 post.id를 보내주기 떄문에 2번째 인수로 데이터를 보내줄 필요가 없다.
+  return axios.delete(`/post/${data}/like`);
+}
+
+function* unlikePost(action) {
+  try {
+    const result = yield call(unlikePostAPI, action.data);
+    yield put({
+      type: UNLIKE_POST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    yield put({
+      type: UNLIKE_POST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
 
 function loadPostsAPI(data) {
   return axios.get('/posts', data);
@@ -109,6 +154,14 @@ function* addComment(action) {
   }
 }
 
+function* watchLikePost() {
+  yield takeLatest(LIKE_POST_REQUEST, likePost);
+}
+
+function* watchUnlikePost() {
+  yield takeLatest(UNLIKE_POST_REQUEST, unlikePost);
+}
+
 function* watchLoadPosts() {
   // 스크롤 이벤트 중첩 발생 해서 throttle 사용해서 5초 동안 요청 제한, 그러나 요청들을 취소는 하지 않아서 5초뒤에 실행됨
   // 이러면 아예 요청을 한번만 보낼수 있는 방법을 생각해야한다. -> request를 하고 있다면 로딩이 true -> useEffect 사용해 loadPostLoading이 false일때만 요청을 보내자.
@@ -128,5 +181,12 @@ function* watchAddComment() {
 }
 
 export default function* postSaga() {
-  yield all([fork(watchLoadPosts), fork(watchAddPost), fork(watchRemovePost), fork(watchAddComment)]);
+  yield all([
+    fork(watchLikePost),
+    fork(watchUnlikePost),
+    fork(watchLoadPosts),
+    fork(watchAddPost),
+    fork(watchRemovePost),
+    fork(watchAddComment),
+  ]);
 }

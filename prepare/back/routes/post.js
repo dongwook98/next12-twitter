@@ -1,12 +1,26 @@
 const express = require('express');
+// multipart/form-data 를 처리하기 위한 multer
+const multer = require('multer');
+const path = require('path');
+// 파일 시스템을 조작할 수 있음
+const fs = require('fs');
 
 const { Post, Comment, Image, User } = require('../models');
 const { isLoggedIn } = require('./middlewares');
 
 const router = express.Router();
 
-// 게시글 작성
-// POST /post
+try {
+  fs.accessSync('uploads');
+} catch (error) {
+  console.log('uploads 폴더가 없으므로 생성합니다.');
+  fs.mkdirSync('uploads');
+}
+
+/**
+ * 게시글 작성
+ * POST /post
+ */
 router.post('/', isLoggedIn, async (req, res, next) => {
   try {
     const post = await Post.create({
@@ -14,7 +28,7 @@ router.post('/', isLoggedIn, async (req, res, next) => {
       // 라우터에 접근하면 deserializeUser가 실행되서 사용자 정보를 복구해서 req.user에 넣어준다.
       UserId: req.user.id,
     });
-    // 응답으로 게시글 데이터 보낼때 데이터 추가
+    // 응답으로 게시글 데이터 보낼때 필요한 데이터 추가
     const fullPost = await Post.findOne({
       where: { id: post.id },
       include: [
@@ -46,6 +60,28 @@ router.post('/', isLoggedIn, async (req, res, next) => {
     console.error(error);
     next(error);
   }
+});
+
+const upload = multer({
+  // 나중에는 클라우드 S3에 저장 -> 스케일링 하기위해
+  storage: multer.diskStorage({
+    destination(req, file, done) {
+      done(null, 'uploads');
+    },
+    filename(req, file, done) {
+      // 파일명 중복 막아주기
+      // 제로초.png
+      const ext = path.extname(file.originalname); // 확장자 추출(png)
+      const basename = path.basename(file.originalname, ext); // 제로초
+      done(null, basename + new Date().getTime() + ext); // 제로초151515151123213.png
+    },
+  }),
+  limits: { fileSize: 20 * 1024 * 1024 }, // 20MB 제한
+});
+// POST /post/images
+router.post('/images', isLoggedIn, upload.array('image'), async (req, res, next) => {
+  console.log(req.files);
+  res.json(req.files.map((v) => v.filename));
 });
 
 // :postId와 같이 주소 부분에서 동적으로 바뀌는 부분을 파라미터라고 부른다.

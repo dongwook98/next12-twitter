@@ -28,6 +28,9 @@ export const initialState = {
   uploadImagesLoading: false,
   uploadImagesDone: false,
   uploadImagesError: null,
+  retweetLoading: false,
+  retweetDone: false,
+  retweetError: null,
 };
 
 // faker 사용해서 동적 더미데이터 생성
@@ -85,6 +88,10 @@ export const ADD_COMMENT_REQUEST = 'ADD_COMMENT_REQUEST';
 export const ADD_COMMENT_SUCCESS = 'ADD_COMMENT_SUCCESS';
 export const ADD_COMMENT_FAILURE = 'ADD_COMMENT_FAILURE';
 
+export const RETWEET_REQUEST = 'RETWEET_REQUEST';
+export const RETWEET_SUCCESS = 'RETWEET_SUCCESS';
+export const RETWEET_FAILURE = 'RETWEET_FAILURE';
+
 export const REMOVE_IMAGE = 'REMOVE_IMAGE';
 
 // 동적 액션 생성기
@@ -125,6 +132,21 @@ const reducer = (state = initialState, action) => {
   // draft를 불변성 지키기 않고 수정하면 알아서 다음 state를 불변성 지키면서 만들어준다.
   return produce(state, (draft) => {
     switch (action.type) {
+      case RETWEET_REQUEST:
+        draft.retweetLoading = true;
+        draft.retweetDone = false;
+        draft.retweetError = null;
+        break;
+      case RETWEET_SUCCESS: {
+        draft.retweetLoading = false;
+        draft.retweetDone = true;
+        draft.mainPosts.unshift(action.data);
+        break;
+      }
+      case RETWEET_FAILURE:
+        draft.retweetLoading = false;
+        draft.retweetError = action.error;
+        break;
       case REMOVE_IMAGE:
         draft.imagePaths = draft.imagePaths.filter((v, i) => i !== action.data);
         break;
@@ -183,9 +205,9 @@ const reducer = (state = initialState, action) => {
       case LOAD_POSTS_SUCCESS:
         draft.loadPostsLoading = false;
         draft.loadPostsDone = true;
-        draft.mainPosts = action.data.concat(draft.mainPosts);
+        draft.mainPosts = draft.mainPosts.concat(action.data);
         // 게시글 불러오는 개수 제한
-        draft.hasMorePosts = draft.mainPosts.length < 50;
+        draft.hasMorePosts = draft.mainPosts.length === 10;
         break;
       case LOAD_POSTS_FAILURE:
         draft.loadPostsLoading = false;

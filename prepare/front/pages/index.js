@@ -10,7 +10,13 @@ import { LOAD_MY_INFO_REQUEST } from '../reducers/user';
 const Home = () => {
   const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
-  const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector((state) => state.post);
+  const { mainPosts, hasMorePosts, loadPostsLoading, retweetError } = useSelector((state) => state.post);
+
+  useEffect(() => {
+    if (retweetError) {
+      alert(retweetError);
+    }
+  }, [retweetError]);
 
   /**
    * Home 컴포넌트 마운트시 LOAD_POSTS_REQUEST 액션 실행 -> Saga에 등록해둔 loadPosts 실행(서버와 통신) ->
@@ -39,8 +45,10 @@ const Home = () => {
         // 더 불러올 게시글들이 있고 로딩중이 아닐 때 LOAD_POSTS_REQUEST 실행
         // 스크롤 이벤트가 중첩으로 일어나도 loadPostLoading으로 요청이 한번만 가게 제한
         if (hasMorePosts && !loadPostsLoading) {
+          const lastId = mainPosts[mainPosts.length - 1]?.id;
           dispatch({
             type: LOAD_POSTS_REQUEST,
+            lastId,
           });
         }
       }
@@ -51,7 +59,7 @@ const Home = () => {
     return () => {
       window.removeEventListener('scroll', onScroll);
     };
-  }, [hasMorePosts, loadPostsLoading]);
+  }, [hasMorePosts, loadPostsLoading, mainPosts]);
 
   return (
     <AppLayout>

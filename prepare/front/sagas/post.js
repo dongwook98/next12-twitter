@@ -1,6 +1,6 @@
 import { all, fork, takeLatest, put, delay, throttle, call } from 'redux-saga/effects';
 import axios from 'axios';
-import shortId from 'shortid';
+// import shortId from 'shortid';
 import {
   ADD_POST_FAILURE,
   ADD_POST_REQUEST,
@@ -23,9 +23,31 @@ import {
   UPLOAD_IMAGES_REQUEST,
   UPLOAD_IMAGES_SUCCESS,
   UPLOAD_IMAGES_FAILURE,
+  RETWEET_REQUEST,
+  RETWEET_SUCCESS,
+  RETWEET_FAILURE,
 } from '../reducers/post';
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user';
 // import { generateDummyPost } from '../reducers/post';
+
+function retweetAPI(data) {
+  return axios.post(`/post/${data}/retweet`);
+}
+
+function* retweet(action) {
+  try {
+    const result = yield call(retweetAPI, action.data);
+    yield put({
+      type: RETWEET_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    yield put({
+      type: RETWEET_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
 
 function uploadImagesAPI(data) {
   return axios.post('/post/images', data);
@@ -85,13 +107,14 @@ function* unlikePost(action) {
   }
 }
 
-function loadPostsAPI(data) {
-  return axios.get('/posts', data);
+function loadPostsAPI(lastId) {
+  // get은 쿼리스트링으로 데이터 보낼 수 있음
+  return axios.get(`/posts?lastId=${lastId || 0}`);
 }
 
 function* loadPosts(action) {
   try {
-    const result = yield call(loadPostsAPI, action.data);
+    const result = yield call(loadPostsAPI, action.lastId);
     yield put({
       type: LOAD_POSTS_SUCCESS,
       // LOAD_POSTS_SUCCESS 할 때 가짜 데이터 10개 생성
@@ -174,6 +197,10 @@ function* addComment(action) {
   }
 }
 
+function* watchRetweet() {
+  yield takeLatest(RETWEET_REQUEST, retweet);
+}
+
 function* watchUploadImages() {
   yield takeLatest(UPLOAD_IMAGES_REQUEST, uploadImages);
 }
@@ -206,6 +233,7 @@ function* watchAddComment() {
 
 export default function* postSaga() {
   yield all([
+    fork(watchRetweet),
     fork(watchUploadImages),
     fork(watchLikePost),
     fork(watchUnlikePost),

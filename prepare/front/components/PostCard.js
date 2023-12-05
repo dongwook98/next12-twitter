@@ -7,25 +7,35 @@ import PostImages from './PostImages';
 import CommentForm from './CommentForm';
 import PostCardContent from './PostCardContent';
 import FollowButton from './FollowButton';
-import { REMOVE_POST_REQUEST, LIKE_POST_REQUEST, UNLIKE_POST_REQUEST } from '../reducers/post';
+import { REMOVE_POST_REQUEST, LIKE_POST_REQUEST, UNLIKE_POST_REQUEST, RETWEET_REQUEST } from '../reducers/post';
 
 const PostCard = ({ post }) => {
   const dispatch = useDispatch();
   const { removePostLoading } = useSelector((state) => state.post);
 
+  // me가 있을시에만 id에 접근 (옵셔널 체이닝)
+  const id = useSelector((state) => state.user.me?.id); // state.user.me && state.user.me.id
+  const liked = post.Likers.find((v) => v.id === id);
+
   const onLike = useCallback(() => {
-    dispatch({
+    if (!id) {
+      return alert('로그인이 필요합니다.');
+    }
+    return dispatch({
       type: LIKE_POST_REQUEST,
       data: post.id,
     });
-  }, []);
+  }, [id]);
 
   const onUnLike = useCallback(() => {
-    dispatch({
+    if (!id) {
+      return alert('로그인이 필요합니다.');
+    }
+    return dispatch({
       type: UNLIKE_POST_REQUEST,
       data: post.id,
     });
-  }, []);
+  }, [id]);
 
   const [commentFormOpened, setCommentFormOpened] = useState(false);
   const onToggleComment = useCallback(() => {
@@ -33,22 +43,32 @@ const PostCard = ({ post }) => {
   }, []);
 
   const onRemovePost = useCallback(() => {
-    dispatch({
+    if (!id) {
+      return alert('로그인이 필요합니다.');
+    }
+    return dispatch({
       type: REMOVE_POST_REQUEST,
       data: post.id,
     });
-  }, []);
+  }, [id]);
 
-  // me가 있을시에만 id에 접근 (옵셔널 체이닝)
-  const id = useSelector((state) => state.user.me?.id); // state.user.me && state.user.me.id
-  const liked = post.Likers.find((v) => v.id === id);
+  const onRetweet = useCallback(() => {
+    if (!id) {
+      return alert('로그인이 필요합니다.');
+    }
+    return dispatch({
+      type: RETWEET_REQUEST,
+      data: post.id,
+    });
+  }, [id]);
+
   return (
     <div style={{ marginBottom: 20 }}>
       <Card
         // 이미지가 1개이상일때만 PostImages 컴포넌트 활성화
         cover={post.Images[0] && <PostImages images={post.Images} />}
         actions={[
-          <RetweetOutlined key='retweet' />,
+          <RetweetOutlined key='retweet' onClick={onRetweet} />,
           liked ? (
             <HeartTwoTone twoToneColor='#eb2f96' key='heart' onClick={onUnLike} />
           ) : (
@@ -78,13 +98,24 @@ const PostCard = ({ post }) => {
         ]}
         // 로그인을 했을때만 팔로우 버튼 활성화
         extra={id && <FollowButton post={post} />}
+        title={post.RetweetId ? `${post.User.nickname}님이 리트윗 하셨습니다.` : null}
       >
-        <Card.Meta
-          avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
-          title={post.User.nickname}
-          // 해시태그 기능을 처리하기 위해 PostCardContent 컴포넌트 분리
-          description={<PostCardContent postData={post.content} />}
-        />
+        {post.RetweetId && post.Retweet ? (
+          <Card cover={post.Retweet.Images[0] && <PostImages images={post.Retweet.Images} />}>
+            <Card.Meta
+              avatar={<Avatar>{post.Retweet.User.nickname[0]}</Avatar>}
+              title={post.Retweet.User.nickname}
+              description={<PostCardContent postData={post.Retweet.content} />}
+            />
+          </Card>
+        ) : (
+          <Card.Meta
+            avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
+            title={post.User.nickname}
+            // 해시태그 기능을 처리하기 위해 PostCardContent 컴포넌트 분리
+            description={<PostCardContent postData={post.content} />}
+          />
+        )}
       </Card>
       {commentFormOpened && (
         <div>

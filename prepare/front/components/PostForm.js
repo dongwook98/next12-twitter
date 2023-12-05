@@ -22,9 +22,9 @@ const PostForm = () => {
     }
     const formData = new FormData();
     imagePaths.forEach((p) => {
-      formData.append('image', p);
+      formData.append('image', p); // req.body.image에 넣어줌
     });
-    formData.append('content', text);
+    formData.append('content', text); // req.body.content에 넣어줌
     return dispatch({
       type: ADD_POST_REQUEST,
       data: formData,
